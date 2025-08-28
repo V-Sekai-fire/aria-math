@@ -45,9 +45,3 @@ transformed = AriaMath.Matrix4.transform_point(matrix, vector1)
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/aria_math>.
-
-## License
-
-Copyright (c) 2025-present K. S. Ernest (iFire) Lee
-
-This project is licensed under the MIT License.
