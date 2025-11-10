@@ -7,7 +7,7 @@ defmodule AriaMath.MixProject do
   def project do
     [
       app: :aria_math,
-      version: "0.1.0",
+      version: "0.1.0-dev1",
       build_embedded: true,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
