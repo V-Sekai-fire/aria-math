@@ -499,18 +499,47 @@ defmodule AriaMath.Matrix4.Transformations do
     col1 = basis[[.., 1]]
     col2 = basis[[.., 2]]
 
+    # Ensure all columns have the same type as the basis
+    # Extract type from basis and ensure columns match
+    basis_type = Nx.type(basis)
+    col0 = Nx.as_type(col0, basis_type)
+    col1 = Nx.as_type(col1, basis_type)
+    col2 = Nx.as_type(col2, basis_type)
+
     # Gram-Schmidt orthogonalization
-    # First vector: normalize
-    u0 = Vector3.normalize(col0)
+    # First vector: normalize (returns {vector, success})
+    {u0, _} = Vector3.normalize(col0)
+    # Ensure u0 has the same type as the basis
+    u0 = Nx.as_type(u0, basis_type)
 
     # Second vector: subtract projection onto first, then normalize
-    proj1 = Nx.multiply(u0, Vector3.dot(col1, u0))
-    u1 = Vector3.subtract(col1, proj1) |> Vector3.normalize()
+    # Ensure col1 and u0 have the same type before multiply
+    col1 = Nx.as_type(col1, basis_type)
+    u0 = Nx.as_type(u0, basis_type)
+    # Use element-wise multiply and sum for dot product to avoid type issues
+    dot1 = (Nx.multiply(col1, u0) |> Nx.sum() |> Nx.to_number())
+    # Convert scalar to tensor with same type as u0
+    scalar1 = Nx.tensor(dot1, type: basis_type)
+    proj1 = Nx.multiply(u0, scalar1)
+    {u1, _} = Vector3.subtract(col1, proj1) |> Vector3.normalize()
+    # Ensure u1 has the same type as the basis
+    u1 = Nx.as_type(u1, basis_type)
 
     # Third vector: subtract projections onto first two, then normalize
-    proj2_0 = Nx.multiply(u0, Vector3.dot(col2, u0))
-    proj2_1 = Nx.multiply(u1, Vector3.dot(col2, u1))
-    u2 = Vector3.subtract(col2, Nx.add(proj2_0, proj2_1)) |> Vector3.normalize()
+    # Ensure col2, u0, and u1 have the same type before multiply
+    col2 = Nx.as_type(col2, basis_type)
+    u0 = Nx.as_type(u0, basis_type)
+    u1 = Nx.as_type(u1, basis_type)
+    # Use element-wise multiply and sum for dot product to avoid type issues
+    dot2_0 = (Nx.multiply(col2, u0) |> Nx.sum() |> Nx.to_number())
+    dot2_1 = (Nx.multiply(col2, u1) |> Nx.sum() |> Nx.to_number())
+    scalar2_0 = Nx.tensor(dot2_0, type: basis_type)
+    scalar2_1 = Nx.tensor(dot2_1, type: basis_type)
+    proj2_0 = Nx.multiply(u0, scalar2_0)
+    proj2_1 = Nx.multiply(u1, scalar2_1)
+    {u2, _} = Vector3.subtract(col2, Nx.add(proj2_0, proj2_1)) |> Vector3.normalize()
+    # Ensure u2 has the same type as the basis
+    u2 = Nx.as_type(u2, basis_type)
 
     # Reconstruct the orthogonal basis matrix
     orthogonal_basis = Nx.stack([u0, u1, u2], axis: 1)
