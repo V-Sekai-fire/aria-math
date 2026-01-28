@@ -40,7 +40,7 @@ defmodule AriaMath.AxonLayers.Vector do
     by = b[1]
     bz = b[2]
 
-    Nx.tensor([
+    Nx.stack([
       ay * bz - az * by,
       az * bx - ax * bz,
       ax * by - ay * bx
@@ -95,7 +95,7 @@ defmodule AriaMath.AxonLayers.Vector do
     cos_a = Nx.cos(angle)
     sin_a = Nx.sin(angle)
 
-    Nx.tensor([
+    Nx.stack([
       x * cos_a - y * sin_a,
       x * sin_a + y * cos_a
     ])
@@ -134,7 +134,7 @@ defmodule AriaMath.AxonLayers.Vector do
     rrz = x * ry - y * rx
 
     # Final rotation: v + 2 * ((q × v) * q_w + (q × (q × v)))
-    Nx.tensor([
+    Nx.stack([
       vx + 2 * (rx * w + rrx),
       vy + 2 * (ry * w + rry),
       vz + 2 * (rz * w + rrz)
