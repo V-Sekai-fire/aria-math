@@ -68,12 +68,12 @@ defmodule AriaMath.Matrix4 do
     ty = translation[1]
     tz = translation[2]
 
-    Nx.tensor([
-      [1.0, 0.0, 0.0, tx],
-      [0.0, 1.0, 0.0, ty],
-      [0.0, 0.0, 1.0, tz],
-      [0.0, 0.0, 0.0, 1.0]
-    ])
+    # Build translation matrix using tensor concatenation instead of literal tensor
+    row0 = Nx.concatenate([1.0, 0.0, 0.0, tx])
+    row1 = Nx.concatenate([0.0, 1.0, 0.0, ty])
+    row2 = Nx.concatenate([0.0, 0.0, 1.0, tz])
+    row3 = Nx.concatenate([0.0, 0.0, 0.0, 1.0])
+    Nx.stack([row0, row1, row2, row3])
   end
 
   @doc """
@@ -90,12 +90,12 @@ defmodule AriaMath.Matrix4 do
     sy = scale[1]
     sz = scale[2]
 
-    Nx.tensor([
-      [sx, 0.0, 0.0, 0.0],
-      [0.0, sy, 0.0, 0.0],
-      [0.0, 0.0, sz, 0.0],
-      [0.0, 0.0, 0.0, 1.0]
-    ])
+    # Build scale matrix using tensor concatenation instead of literal tensor
+    row0 = Nx.concatenate([sx, 0.0, 0.0, 0.0])
+    row1 = Nx.concatenate([0.0, sy, 0.0, 0.0])
+    row2 = Nx.concatenate([0.0, 0.0, sz, 0.0])
+    row3 = Nx.concatenate([0.0, 0.0, 0.0, 1.0])
+    Nx.stack([row0, row1, row2, row3])
   end
 
   @doc """
@@ -122,12 +122,12 @@ defmodule AriaMath.Matrix4 do
     sy = scale[1]
     sz = scale[2]
 
-    Nx.tensor([
-      [sx, 0.0, 0.0, tx],
-      [0.0, sy, 0.0, ty],
-      [0.0, 0.0, sz, tz],
-      [0.0, 0.0, 0.0, 1.0]
-    ])
+    # Build TRS matrix using tensor concatenation instead of literal tensor
+    row0 = Nx.concatenate([sx, 0.0, 0.0, tx])
+    row1 = Nx.concatenate([0.0, sy, 0.0, ty])
+    row2 = Nx.concatenate([0.0, 0.0, sz, tz])
+    row3 = Nx.concatenate([0.0, 0.0, 0.0, 1.0])
+    Nx.stack([row0, row1, row2, row3])
   end
 
   @doc """
