@@ -197,13 +197,12 @@ defmodule AriaMath.AxonLayers.Matrix do
     r21 = r21 * sy
     r22 = r22 * sz
 
-    # Build final matrix
-    Nx.tensor([
-      [r00, r01, r02, tx],
-      [r10, r11, r12, ty],
-      [r20, r21, r22, tz],
-      [0.0, 0.0, 0.0, 1.0]
-    ])
+    # Build final matrix using tensor concatenation instead of literal tensor
+    row0 = Nx.concatenate([r00, r01, r02, tx])
+    row1 = Nx.concatenate([r10, r11, r12, ty])
+    row2 = Nx.concatenate([r20, r21, r22, tz])
+    row3 = Nx.concatenate([0.0, 0.0, 0.0, 1.0])
+    Nx.stack([row0, row1, row2, row3])
   end
 
   @doc """

@@ -379,7 +379,7 @@ defmodule AriaMath.AxonLayers do
     inverse_matrix = Nx.broadcast(0.0, {4, 4})
     inverse_matrix = Nx.put_slice(inverse_matrix, [0, 0], r_inv)
     inverse_matrix = Nx.put_slice(inverse_matrix, [0, 3], Nx.reshape(t_inv, {3, 1}))
-    inverse_matrix = Nx.put_slice(inverse_matrix, [3, 3], Nx.tensor([[1.0]]))
+    inverse_matrix = Nx.put_slice(inverse_matrix, [3, 3], Nx.reshape(1.0, {1, 1}))
 
     inverse_matrix
   end
@@ -665,12 +665,12 @@ defmodule AriaMath.AxonLayers do
       sy = scales[1]
       sz = scales[2]
 
-      Nx.tensor([
-        [sx, 0.0, 0.0, 0.0],
-        [0.0, sy, 0.0, 0.0],
-        [0.0, 0.0, sz, 0.0],
-        [0.0, 0.0, 0.0, 1.0]
-      ], type: :f32)
+      Nx.stack([
+        Nx.stack([sx, 0.0, 0.0, 0.0]),
+        Nx.stack([0.0, sy, 0.0, 0.0]),
+        Nx.stack([0.0, 0.0, sz, 0.0]),
+        Nx.stack([0.0, 0.0, 0.0, 1.0])
+      ], axis: 0)
     end
   end
 
@@ -744,17 +744,17 @@ defmodule AriaMath.AxonLayers do
 
       # Create scale matrix and multiply with rotation
       scale_matrix = Nx.eye(4)
-      scale_matrix = Nx.put_slice(scale_matrix, [0, 0], Nx.tensor([[sx]]))
-      scale_matrix = Nx.put_slice(scale_matrix, [1, 1], Nx.tensor([[sy]]))
-      scale_matrix = Nx.put_slice(scale_matrix, [2, 2], Nx.tensor([[sz]]))
+      scale_matrix = Nx.put_slice(scale_matrix, [0, 0], Nx.reshape(sx, {1, 1}))
+      scale_matrix = Nx.put_slice(scale_matrix, [1, 1], Nx.reshape(sy, {1, 1}))
+      scale_matrix = Nx.put_slice(scale_matrix, [2, 2], Nx.reshape(sz, {1, 1}))
 
       scaled_rotation = Nx.dot(rotations, scale_matrix)
 
       # Create translation matrix and multiply
       translation_matrix = Nx.eye(4)
-      translation_matrix = Nx.put_slice(translation_matrix, [0, 3], Nx.tensor([[tx]]))
-      translation_matrix = Nx.put_slice(translation_matrix, [1, 3], Nx.tensor([[ty]]))
-      translation_matrix = Nx.put_slice(translation_matrix, [2, 3], Nx.tensor([[tz]]))
+      translation_matrix = Nx.put_slice(translation_matrix, [0, 3], Nx.reshape(tx, {1, 1}))
+      translation_matrix = Nx.put_slice(translation_matrix, [1, 3], Nx.reshape(ty, {1, 1}))
+      translation_matrix = Nx.put_slice(translation_matrix, [2, 3], Nx.reshape(tz, {1, 1}))
 
       Nx.dot(translation_matrix, scaled_rotation)
     end
