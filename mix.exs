@@ -69,7 +69,7 @@ defmodule AriaMath.MixProject do
 
   defp deps do
     [
-      {:nx, "~> 0.10"},
+      {:nx, "~> 0.11"},
       {:axon, "~> 0.7"},
       {:jason, "~> 1.4"},
       {:ex_doc, "~> 0.30", only: :dev, runtime: false},
